@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دنیای ریاضیات تعاملی | Math Razavi</title>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/misc/Farsi-Digits/font-face.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* تنظیمات کلی صفحه و متغیرها */
+        :root {
+            --primary-dark: #1a2a6c;
+            --primary-light: #b21f1f;
+            --accent: #fdbb2d;
+            --text-dark: #2d3748;
+            --text-light: #f7fafc;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--text-dark);
+            line-height: 1.7;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* هدر سایت */
+        header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #2a5298 100%);
+            color: var(--text-light);
+            padding: 5rem 1rem 8rem; /* فضای بیشتر در پایین برای موج */
+            text-align: center;
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 900;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* جداکننده موجی شکل پایین هدر */
+        .wave-divider {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+        }
+
+        .wave-divider svg {
+            position: relative;
+            display: block;
+            width: calc(138% + 1.3px);
+            height: 80px;
+        }
+
+        .wave-divider .shape-fill {
+            fill: rgba(255, 255, 255, 0.2); /* کمی شفافیت برای ادغام با پس زمینه */
+             backdrop-filter: blur(5px);
+        }
+
+
+        /* کانتینر اصلی */
+        .container {
+            max-width: 1200px;
+            margin: -4rem auto 0; /* کشیدن به بالا روی هدر */
+            padding: 2rem 1rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* شبکه کارت‌ها */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 5rem;
+        }
+
+        /* استایل کارت بازی - Glassmorphism */
+        .game-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 45px rgba(31, 38, 135, 0.25);
+            border-color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* بخش بصری بالای کارت */
+        .card-visual {
+            height: 180px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 4.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* افکت درخشش روی هاور */
+        .card-visual::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .game-card:hover .card-visual::after { opacity: 1; }
+
+        /* آیکون داخل کارت و انیمیشن‌های آن */
+        .card-visual i {
+            z-index: 2;
+            transition: all 0.5s ease;
+        }
+        .game-card:hover .fa-layer-group { transform: rotate(15deg) scale(1.1); }
+        .game-card:hover .fa-scale-balanced { animation: swing 1s ease-in-out infinite alternate; }
+        .game-card:hover .fa-shapes { transform: rotate(180deg); }
+        .game-card:hover .fa-person-running { transform: translateX(10px); }
+        .game-card:hover .fa-cube { animation: pulse 1s infinite; }
+        .game-card:hover .fa-chart-line { transform: scale(1.1) translateY(-5px); }
+
+        @keyframes swing { 0% { transform: rotate(-10deg); } 100% { transform: rotate(10deg); } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+
+        /* گرادینت‌های اختصاصی هر کارت */
+        .visual-sets { background: linear-gradient(45deg, #ff6b6b, #f06595); }
+        .visual-equation { background: linear-gradient(120deg, #20bf55, #01baef); }
+        .visual-symmetry { background: linear-gradient(120deg, #a1c4fd, #c2e9fb); color: #333; }
+        .visual-running { background: linear-gradient(to right, #f12711, #f5af19); }
+        .visual-choco { background: linear-gradient(to right, #11998e, #38ef7d); }
+        .visual-slope { background: linear-gradient(to top, #c471ed, #f64f59); }
+
+        .card-content {
+            padding: 2rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.8rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+
+        .card-desc {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 2rem;
+            flex-grow: 1;
+        }
+
+        /* دکمه‌های بازی */
+        .play-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            border-radius: 50px;
+            text-align: center;
+            font-weight: 800;
+            text-decoration: none;
+            color: white;
+            background-size: 200% auto;
+            box-shadow: 0 4px 15px 0 rgba(0,0,0,0.1);
+            transition: all 0.4s ease;
+            border: none;
+        }
+
+        /* رنگ دکمه متناسب با کارت */
+        .btn-sets { background-image: linear-gradient(to right, #ff6b6b, #f06595, #ff6b6b); }
+        .btn-equation { background-image: linear-gradient(to right, #20bf55, #01baef, #20bf55); }
+        .btn-symmetry { background-image: linear-gradient(to right, #a1c4fd, #c2e9fb, #a1c4fd); color: #333; }
+        .btn-running { background-image: linear-gradient(to right, #f12711, #f5af19, #f12711); }
+        .btn-choco { background-image: linear-gradient(to right, #11998e, #38ef7d, #11998e); }
+        .btn-slope { background-image: linear-gradient(to right, #c471ed, #f64f59, #c471ed); }
+
+        .play-btn:hover {
+            background-position: right center;
+            box-shadow: 0 8px 25px 0 rgba(0,0,0,0.2);
+            transform: translateY(-3px);
+        }
+
+        /* بخش درباره ما */
+        .about-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            padding: 4rem;
+            border-radius: 25px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            margin-top: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* المان تزئینی پس زمینه درباره ما */
+        .about-section::before {
+            content: '\f1ec'; /* آیکون ماشین حساب */
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            top: -10%;
+            left: -5%;
+            font-size: 15rem;
+            color: rgba(0,0,0,0.03);
+            transform: rotate(-20deg);
+            z-index: 0;
+        }
+
+        .about-content { position: relative; z-index: 1; }
+
+        .about-section h2 {
+            color: var(--primary-dark);
+            margin-bottom: 1.5rem;
+            font-size: 2.2rem;
+        }
+
+        .profile-icon-container {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, var(--accent), #ff7e5f);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(253, 187, 45, 0.4);
+        }
+
+        .profile-icon {
+            font-size: 3.5rem;
+            color: white;
+        }
+        
+        .about-text {
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* فوتر */
+        footer {
+            text-align: center;
+            padding: 3rem;
+            background: rgba(26, 42, 108, 0.9); /* نیمه شفاف */
+            backdrop-filter: blur(10px);
+            color: white;
+            margin-top: 5rem;
+            font-size: 1rem;
+        }
+
+        /* مدیا کوئری برای موبایل */
+        @media (max-width: 768px) {
+            header h1 { font-size: 2.2rem; }
+            header { padding-bottom: 6rem; }
+            .container { margin-top: -3rem; padding: 1rem; }
+            .card-visual { height: 150px; font-size: 3.5rem; }
+            .about-section { padding: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>آزمایشگاه ریاضی تعاملی</h1>
+        <p>سفری هیجان‌انگیز به دنیای مفاهیم ریاضی با ابزارهای هوشمند و بازی‌های هدفمند</p>
+        
+        <div class="wave-divider">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+            </svg>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="games-grid">
+            
+            <div class="game-card">
+                <div class="card-visual visual-sets">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">جادوی مجموعه‌ها</h3>
+                    <p class="card-desc">کشف مفاهیم اجتماع، اشتراک و تفاضل در یک محیط بصری پویا.</p>
+                    <a href="https://math-razavi.github.io/Sets/" class="play-btn btn-sets">کاوش در آزمایشگاه <i class="fa-solid fa-arrow-left" style="margin-right: 8px;"></i></a>
+                </div>
+            </div>
+
+            <div class="game-card">
+                <div class="card-visual visual-equation">
+                    <i class="fa-solid fa-scale-balanced"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">ترازوی معادله</h3>
+                    <p class="card-desc">مجهول X را با روش‌های تعاملی و سرگرم‌کننده روی کفه ترازو پیدا کنید.</p>
+                    <a href="https://math-razavi.github.io/Equation7/" class="play-btn btn-equation">شروع حل معادله <i class="fa-solid fa-arrow-left" style="margin-right: 8px;"></i></a>
+                </div>
+            </div>
+
+            <div class="game-card">
+                <div class="card-visual visual-symmetry">
+                    <i class="fa-solid fa-shapes"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">کارگاه تقارن و دوران</h3>
+                    <p class="card-desc">تجربه عملی تقارن محوری، مرکزی و دوران اشکال هندسی در صفحه.</p>
+                    <a href="https://math-razavi.github.io/symmetry/" class="play-btn btn-symmetry">ورود به دنیای تقارن <i class="fa-solid fa-arrow-left" style="margin-right: 8px;"></i></a>
+                </div>
+            </div>
+
+            <div class="game-card">
+                <div class="card-visual visual-running">
+                    <i class="fa-solid fa-person-running"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">دونده فیثاغورس</h3>
+                    <p class="card-desc">یک بازی سرعتی و هیجانی برای درک عمیق رابطه فیثاغورس.</p>
+                    <a href="https://math-razavi.github.io/Running" class="play-btn btn-running">شروع مسابقه <i class="fa-solid fa-arrow-left" style="margin-right: 8px;"></i></a>
+                </div>
+            </div>
+
+            <div class="game-card">
+                <div class="card-visual visual-choco">
+                    <i class="fa-solid fa-cube"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">شکلات‌های حجیم</h3>
+                    <p class="card-desc">محاسبه حجم منشورها با طعم شکلات! مخصوص پایه هفتم.</p>
+                    <a href="https://math-razavi.github.io/ChocoMath/" class="play-btn btn-choco">محاسبه حجم <i class="fa-solid fa-arrow-left" style="margin-right: 8px;"></i></a>
+                </div>
+            </div>
+
+            <div class="game-card">
+                <div class="card-visual visual-slope">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">شیب و خط</h3>
+                    <p class="card-desc">درک بصری تأثیر شیب و عرض از مبدأ بر روی نمودار خطی.</p>
+                    <a href="https://math-razavi.github.io/slope/" class="play-btn btn-slope">بررسی نمودار <i class="fa-solid fa-arrow-left" style="margin-right: 8px;"></i></a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="about-section" id="about">
+            <div class="about-content">
+                <div class="profile-icon-container">
+                    <i class="fa-solid fa-user-graduate profile-icon"></i>
+                </div>
+                <h2>درباره طراح</h2>
+                <p class="about-text">
+                    سلام! من [نام شما] هستم. <br>
+                    توسعه‌دهنده ابزارهای آموزشی و علاقمند به تدریس ریاضیات با شیوه‌های نوین و تعاملی. <br>
+                    هدف من تبدیل مفاهیم خشک کتاب درسی به تجربه‌ای زنده، پویا و سرگرم‌کننده برای دانش‌آموزان است. تمامی این ابزارها با تکنولوژی‌های مدرن وب طراحی شده‌اند.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>تمامی حقوق محفوظ است &copy; 2026 | طراحی شده با ❤️ و <i class="fa-solid fa-code"></i> برای ریاضیات</p>
+    </footer>
+
+</body>
+</html>
